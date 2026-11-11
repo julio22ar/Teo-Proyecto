@@ -7,7 +7,7 @@ Teoría de Lenguajes de Programación
 ## Integrantes
 
 1. 
-2. 
+2. Jose Everth Martinez Benavides 00156021
 3. 
 4. 
 5. Julio Alberto Rodriguez Valencia 00163922

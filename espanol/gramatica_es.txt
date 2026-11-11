@@ -1,0 +1,50 @@
+GRAMATICA DEL ESPANOL REDUCIDO (Fase 2)
+=======================================
+
+Oraciones declarativas con sujeto, verbo y objeto directo. Se admiten
+determinantes, adjetivos, adverbios y frases preposicionales. Los verbos
+estan en tercera persona, en presente o pasado. Un punto final es opcional.
+
+Notacion: [ x ] = x es opcional (equivale a x | cadena vacia)
+
+<oracion>              ::= [ <adverbio> ] <sujeto> <predicado> [ "." ]
+<sujeto>               ::= <grupo_nominal>
+<predicado>            ::= [ <adverbio> ] <verbo> [ <adverbio> ]
+                          <objeto> [ <adverbio> ]
+<objeto>               ::= [ "a" ] <grupo_nominal>
+<grupo_nominal>        ::= <determinante> [ <adjetivo> ] <sustantivo>
+                          [ <adjetivo> ] [ <frase_preposicional> ]
+<frase_preposicional>  ::= <preposicion> <grupo_nominal>
+
+Para expresar la concordancia como una CFG pura, las reglas anteriores
+son abreviaturas de estas producciones desdobladas. Se usan los sufijos
+ms = masculino singular, fs = femenino singular, mp = masculino plural
+y fp = femenino plural:
+
+<oracion>             ::= [ <adverbio> ] <GN_ms> <P_s> [ "." ]
+                       | [ <adverbio> ] <GN_fs> <P_s> [ "." ]
+                       | [ <adverbio> ] <GN_mp> <P_p> [ "." ]
+                       | [ <adverbio> ] <GN_fp> <P_p> [ "." ]
+<P_s>                 ::= [ <adverbio> ] <verbo_s> [ <adverbio> ]
+                          <objeto> [ <adverbio> ]
+<P_p>                 ::= [ <adverbio> ] <verbo_p> [ <adverbio> ]
+                          <objeto> [ <adverbio> ]
+<verbo_s>             ::= <verbo_presente_s> | <verbo_pasado_s>
+<verbo_p>             ::= <verbo_presente_p> | <verbo_pasado_p>
+<objeto>              ::= [ "a" ] <GN>
+<GN>                  ::= <GN_ms> | <GN_fs> | <GN_mp> | <GN_fp>
+<GN_ms>               ::= <DET_ms> [ <ADJ_ms> ] <SUST_ms>
+                          [ <ADJ_ms> ] [ <frase_preposicional> ]
+<GN_fs>               ::= <DET_fs> [ <ADJ_fs> ] <SUST_fs>
+                          [ <ADJ_fs> ] [ <frase_preposicional> ]
+<GN_mp>               ::= <DET_mp> [ <ADJ_mp> ] <SUST_mp>
+                          [ <ADJ_mp> ] [ <frase_preposicional> ]
+<GN_fp>               ::= <DET_fp> [ <ADJ_fp> ] <SUST_fp>
+                          [ <ADJ_fp> ] [ <frase_preposicional> ]
+<frase_preposicional> ::= <preposicion> <GN>
+
+Cada categoria terminal (DET, ADJ, SUST, verbo, adverbio y preposicion)
+se expande en las palabras de vocabulario.py. El parser usa los mismos
+rasgos mediante tuplas para evitar escribir cuatro funciones casi
+identicas. La aceptacion es sintactica; no comprueba si una oracion
+tiene sentido en el mundo real.
