@@ -1,0 +1,54 @@
+GRAMATICA DEL MINI-C (Fase 1)
+=============================
+Subconjunto de C: declaraciones int, asignaciones, if/else, while
+y expresiones aritmeticas. Esta escrita sin recursion por la izquierda
+para poder hacer el parser descendente recursivo (una funcion por regla).
+
+Notacion:  { x } = x se repite cero o mas veces
+           [ x ] = x es opcional
+
+<programa>      ::= <instrucciones>
+
+<instrucciones> ::= { <instruccion> }
+
+<instruccion>   ::= <declaracion>
+                  | <asignacion>
+                  | <condicional>
+                  | <ciclo>
+
+<declaracion>   ::= "int" ID [ "=" <expresion> ] ";"
+
+<asignacion>    ::= ID "=" <expresion> ";"
+
+<condicional>   ::= "if" "(" <condicion> ")" <bloque> [ "else" <bloque> ]
+
+<ciclo>         ::= "while" "(" <condicion> ")" <bloque>
+
+<bloque>        ::= "{" <instrucciones> "}"
+
+<condicion>     ::= <expresion> <comparador> <expresion>
+
+<comparador>    ::= "<" | ">" | "<=" | ">=" | "==" | "!="
+
+<expresion>     ::= <termino> { ("+" | "-") <termino> }
+
+<termino>       ::= <factor> { ("*" | "/") <factor> }
+
+<factor>        ::= NUM
+                  | ID
+                  | "(" <expresion> ")"
+
+Tokens (los reconoce lexer.py):
+  NUM   -> uno o mas digitos                 ej: 5, 120
+  ID    -> letra seguida de letras/digitos   ej: x, total1
+  RES   -> int, if, else, while
+  OP    -> + - * / = < > <= >= == !=
+  PAR   -> ( )
+  LLAVE -> { }
+  PYC   -> ;
+
+Como se decide que regla usar (por eso es LL(1), solo se ve 1 token):
+  token "int"   -> declaracion
+  token ID      -> asignacion
+  token "if"    -> condicional
+  token "while" -> ciclo
