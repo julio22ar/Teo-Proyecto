@@ -1,0 +1,61 @@
+id,oracion,nivel,esperado,fenomeno
+1,El niño lee un libro.,1,aceptar,oracion simple en presente singular
+2,La niña mira la flor.,1,aceptar,oracion simple en presente singular
+3,Los perros buscan la pelota.,1,aceptar,oracion simple en presente plural
+4,Las maestras leen las cartas.,1,aceptar,oracion simple en presente plural
+5,Un gato come una flor.,1,aceptar,determinantes indefinidos
+6,La maestra compra un libro.,1,aceptar,oracion simple en presente singular
+7,Los niños visitan el parque.,1,aceptar,oracion simple en presente plural
+8,Unas niñas llevan unas flores.,1,aceptar,determinantes indefinidos en plural
+9,El maestro leyó la carta.,1,aceptar,oracion simple en pasado singular
+10,Las gatas miraron el árbol.,1,aceptar,oracion simple en pasado plural
+11,El perro encontró la pelota.,1,aceptar,oracion simple en pasado singular
+12,Los maestros compraron unos libros.,1,aceptar,oracion simple en pasado plural
+13,Una niña visitó el jardín.,1,aceptar,oracion simple en pasado singular
+14,Unos gatos comieron las flores.,1,aceptar,oracion simple en pasado plural
+15,El niña lee un libro.,1,rechazar,error de genero determinante-sustantivo
+16,Los niño miran la casa.,1,rechazar,error de numero determinante-sustantivo
+17,Los perros busca la pelota.,1,rechazar,error de numero sujeto-verbo
+18,La maestra leen una carta.,1,rechazar,error de numero sujeto-verbo
+19,Niño el lee un libro.,1,rechazar,orden incorrecto de las palabras
+20,El gato come una.,1,rechazar,objeto incompleto
+21,El niño alto lee un libro nuevo.,2,aceptar,adjetivos despues del sustantivo
+22,La niña pequeña mira las flores rojas.,2,aceptar,adjetivos despues del sustantivo
+23,Los perros pequeños buscan la pelota roja.,2,aceptar,adjetivos despues del sustantivo
+24,La maestra lee una carta en el jardín.,2,aceptar,frase preposicional
+25,El gato mira la pelota sobre la mesa.,2,aceptar,frase preposicional
+26,Ayer los niños visitaron el parque.,2,aceptar,adverbio al inicio
+27,El perro busca la pelota rápidamente.,2,aceptar,adverbio al final
+28,La niña siempre lee un libro.,2,aceptar,adverbio antes del verbo
+29,El maestro mira a la niña.,2,aceptar,objeto con a
+30,Los niños de la casa roja compran unos libros.,2,aceptar,frase preposicional en el sujeto
+31,Hoy la maestra alta lleva las cartas nuevas para los niños.,2,aceptar,adverbio con adjetivos y frase preposicional
+32,Las gatas bonitas comieron lentamente las flores.,2,aceptar,adverbio despues del verbo
+33,Un niño pequeño encontró un libro rojo bajo el árbol.,2,aceptar,adjetivos y frase preposicional
+34,La nueva maestra visitó la casa bonita.,2,aceptar,adjetivo antes del sustantivo
+35,El niño alta lee un libro.,2,rechazar,error de genero sustantivo-adjetivo
+36,La niña mira las flores rojo.,2,rechazar,error de genero y numero sustantivo-adjetivo
+37,Los perros pequeño buscan la pelota.,2,rechazar,error de numero sustantivo-adjetivo
+38,Ayer los niños visitó el parque.,2,rechazar,error de numero sujeto-verbo con adverbio
+39,El gato mira la pelota sobre mesa la.,2,rechazar,orden incorrecto en la frase preposicional
+40,La maestra lee una carta en.,2,rechazar,frase preposicional incompleta
+41,El niño que lee un libro mira la casa.,3,aceptar,subordinada relativa de sujeto
+42,Los niños que la maestra mira leen un libro.,3,aceptar,subordinada relativa de objeto
+43,El niño lee un libro que la maestra compró.,3,aceptar,subordinada relativa en el objeto
+44,El perro que busca la pelota que el niño llevó come una flor.,3,aceptar,subordinadas anidadas
+45,El niño y la niña leen un libro.,3,aceptar,coordinacion de sujetos
+46,El niño lee un libro y la niña mira una flor.,3,aceptar,coordinacion de oraciones
+47,La niña mira una flor roja y bonita.,3,aceptar,coordinacion de adjetivos
+48,El niño lee.,3,aceptar,verbo sin objeto
+49,Lee un libro.,3,aceptar,sujeto tacito
+50,El niño no lee un libro.,3,aceptar,negacion
+51,El niño la mira.,3,aceptar,pronombre de objeto
+52,El perro busca la pelota del niño.,3,aceptar,contraccion del
+53,El niño lee el libro rápidamente en el parque.,3,aceptar,frase preposicional que modifica al verbo
+54,El niño mira el libro de la maestra de la casa roja.,3,aceptar,frases preposicionales anidadas
+55,La maestra busca el libro en la mesa.,3,aceptar,ambiguedad estructural
+56,El niño y la niña son alto y alta respectivamente.,3,aceptar,dependencias cruzadas
+57,Los niños que la maestra mira lee un libro.,3,rechazar,error de concordancia a distancia
+58,El niño que lee un libro miran la casa.,3,rechazar,error de concordancia a distancia
+59,El niño y la niña lee un libro.,3,rechazar,error de numero con sujeto coordinado
+60,La maestra lee un libro y una cartas.,3,rechazar,error de numero en objeto coordinado
