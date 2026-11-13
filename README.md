@@ -1,103 +1,118 @@
-# Proyecto TEO 
+# Proyecto TEO
 
-Gramáticas formales y lenguaje natural: experimentando los límites de la jerarquía de Chomsky.
-
-Teoría de Lenguajes de Programación
+**Gramáticas formales y lenguaje natural: experimentando los límites de la jerarquía de Chomsky**  
+Asignatura: Teoría de Lenguajes de Programación.
 
 ## Integrantes
 
-1. 
-2. Jose Everth Martinez Benavides 00156021
-3. Diego Alejandro Montoya Ramirez 00087522
-4. José Alfredo Rodríguez Rodríguez 00055421
-5. Julio Alberto Rodriguez Valencia 00163922
+1. Julio Alberto Rodriguez Valencia — 00163922
+2. Jose Everth Martinez Benavides — 00156021
+3. Diego Alejandro Montoya Ramirez — 00087522
+4. José Alfredo Rodríguez Rodríguez — 00055421
 
 ## Requisitos
 
-- Python 3 (probado con Python 3.10 o superior)
-- El parser del mini-C no necesita instalar ninguna librería.
+- Python 3.10 o superior.
+- Graphviz (recomendado) para exportar los árboles sintácticos a PNG o SVG. Si no está instalado, el programa guarda el grafo en formato DOT.
+- spaCy y el modelo es_core_news_sm únicamente para ejecutar la demostración de comparacion/demo_spacy.py.
+- Una clave de API y un modelo compatible con la Responses API y salidas JSON Schema estrictas para ejecutar el experimento LLM.
 
-## Instalación
+El lexer y los parsers propios utilizan la biblioteca estándar de Python. No se necesita instalar paquetes Python para probar mini-C, el parser propio del español o el menú.
 
-1. Descargar o clonar el repositorio.
-2. Abrir una terminal dentro de la carpeta `proyecto-tlp`.
+## Instalación y ejecución
 
-```
-cd proyecto-tlp
-```
+Clonar el repositorio y ubicarse en la carpeta raíz:
 
-## Ejecución
+~~~bash
+git clone https://github.com/julio22ar/Teo-Proyecto.git
+cd Teo-Proyecto
+~~~
 
-Todos los comandos se corren desde la carpeta raíz del proyecto.
+Iniciar el menú integrador:
 
-Analizar un archivo con código del mini-C:
+~~~bash
+python main.py
+~~~
 
-```
+En algunos sistemas el comando puede ser python3.
+
+### Opciones del menú
+
+1. **Analizar código mini-C.** Permite cargar un archivo o pegar código de varias líneas. Para finalizar la entrada pegada, escribir :fin en una línea independiente. Ejecuta análisis léxico y sintáctico e imprime el árbol.
+2. **Analizar una oración en español reducido.** Ejecuta la gramática de espanol/gramatica_es.txt, muestra el árbol y el motivo de rechazo cuando no pertenece al subconjunto.
+3. **Ejecutar pruebas mini-C.** Lanza los casos válidos e inválidos de pruebas/casos_minic.py.
+4. **Demo exploratoria de spaCy.** Ejecuta comparacion/demo_spacy.py sobre los casos de pruebas/fallas.csv. Esta demostración exploratoria no sustituye la comparación cuantitativa de las 60 oraciones requerida en la Fase 2.
+5. **Evaluar el parser propio con el corpus.** Procesa las 60 oraciones de pruebas/oraciones.csv y resume coincidencias y métricas frente a la columna esperado.
+6. **Experimento LLM.** Permite preparar los archivos sin consultar la API o iniciar la ejecución real. La ejecución completa envía 120 solicitudes (60 oraciones en zero-shot y few-shot) y puede generar cargos según la cuenta del proveedor.
+
+### Ejecutar mini-C desde un archivo
+
+Se conserva el modo de ejecución directa:
+
+~~~bash
 python main.py minic/ejemplos/valido.txt
 python main.py minic/ejemplos/invalido.txt
-```
+~~~
 
-Escribir el código directamente por teclado (una línea):
+El programa muestra tokens, árbol sintáctico y el resultado de aceptación o rechazo.
 
-```
-python main.py
-```
+## Visualización de árboles
 
-El programa muestra los tokens, el árbol de análisis sintáctico y si la entrada fue ACEPTADA o RECHAZADA. Si hay un error indica la línea y qué se esperaba.
+arbol.py contiene la clase Nodo, imprimir_arbol() y dibujar_arbol(). Esta última exporta el árbol como PNG o SVG cuando encuentra el ejecutable dot de Graphviz. Las imágenes se guardan dentro de salidas/ (carpeta creada al ejecutar el menú). Sin Graphviz, se escribe el archivo fuente .dot para poder renderizarlo posteriormente.
 
-> En algunas computadoras el comando es `python3` en lugar de `python`.
+Descarga e instalación de Graphviz: https://graphviz.org/download/. Después de instalarlo, verifique que dot esté disponible en el PATH y reinicie la terminal.
 
-## Estructura del proyecto
+## Pruebas
 
-```
-proyecto-tlp/
-├── main.py         programa principal
-├── arbol.py        clase Nodo e impresión del árbol (la usan todos los módulos)
-├── minic/          lexer, parser y gramática del mini-C
-├── espanol/        gramática y parser del español (pendiente)
-├── pruebas/        casos de prueba y set de oraciones (pendiente)
-├── comparacion/    comparación con spaCy y HuggingFace (pendiente)
-├── llm/            prompts, experimento por OpenAI API y resultados
-└── informe/        marco teórico, informe integrado y diapositivas
-```
+Pruebas del parser mini-C:
 
-## Lenguaje que reconoce el mini-C
+~~~bash
+python pruebas/casos_minic.py
+~~~
 
-Declaraciones `int`, asignaciones, `if / else`, `while` y expresiones aritméticas con `+ - * /` y paréntesis. La gramática completa está en `minic/gramatica.txt`.
+Pruebas automatizadas del experimento LLM, que utilizan respuestas simuladas y no consultan servicios externos:
 
-Ejemplo de entrada válida:
+~~~bash
+python -m unittest discover -s pruebas -p "test_llm.py" -v
+~~~
 
-```
-int x = 5;
-while (x < 10) {
-    x = x + 1;
-}
-```
+## Experimento LLM
 
-## LLM, teoría e informe
+La configuración detallada se encuentra en llm/README.md. Para preparar los archivos sin clave ni llamadas a la API:
 
-El experimento está implementado en [llm/experimento.py](llm/experimento.py).
-Envía las 60 oraciones del corpus a OpenAI por API en los modos zero-shot y
-few-shot; guarda las respuestas completas y evalúa por separado el acierto
-respecto al corpus y la adhesión a la gramática reducida.
-
-Preparar los archivos sin usar una clave ni consultar la API:
-
-```powershell
+~~~bash
 python -m llm.experimento --preparar
-```
+~~~
 
-Para ejecutar las 120 consultas, copiar `.env.example` como `.env`, configurar
-`OPENAI_API_KEY` y `OPENAI_MODEL`, y ejecutar:
+Para ejecutar el experimento:
 
-```powershell
-python -m llm.experimento
-```
+1. Copiar .env.example a .env.
+2. Definir OPENAI_API_KEY y OPENAI_MODEL en .env.
+3. Revisar modelo, permisos y precios en la plataforma del proveedor.
+4. Ejecutar python -m llm.experimento.
 
-La clave queda fuera del repositorio mediante `.gitignore`. Los archivos
-preparados tienen estado `pendiente` hasta recibir respuestas reales.
-Revisar [las instrucciones y criterios de evaluación](llm/README.md) antes de
-ejecutar. No se necesitan paquetes de Python adicionales.
+La clave se mantiene fuera del repositorio mediante .gitignore. No se deben publicar claves ni incorporarlas a capturas, logs o el informe.
 
-- [Marco teórico y bibliografía](informe/marco_teorico.md).
-- [Informe integrado y estado de las secciones](informe/informe.md).
+## Estructura del repositorio
+
+~~~text
+Teo-Proyecto/
+├── main.py                    menú integrador y punto de entrada
+├── arbol.py                   nodos e impresión/visualización de árboles
+├── minic/                     lexer, parser y gramática del mini-C
+├── espanol/                   gramática, parser y vocabulario español reducido
+├── pruebas/                   corpus, casos mini-C y pruebas automatizadas
+├── comparacion/               demostración exploratoria con spaCy
+├── llm/                       prompts, experimento API, logs y resultados
+├── informe/                   borrador del informe y marco teórico
+├── .env.example               plantilla de variables de entorno
+└── README.md                  instrucciones del proyecto
+~~~
+
+## Estado de la Fase 2
+
+El repositorio cuenta con el parser del español reducido y su gramática, un corpus de 60 oraciones y el módulo de experimento LLM. La demo spaCy actualmente trabaja con pruebas/fallas.csv; todavía debe completarse el pipeline de comparación de las 60 oraciones con las herramientas NLP elegidas, incluyendo medición de tiempos, métricas y gráficas. Los resultados reales del LLM requieren ejecutar las consultas con una clave configurada. El informe final debe completarse con las mediciones verificables del equipo, sin reemplazarlas por resultados simulados.
+
+- Borrador actual del informe en Markdown: informe/informe.md.
+- Marco teórico y bibliografía de trabajo: informe/marco_teorico.md.
+- Instrucciones del experimento LLM: llm/README.md.
