@@ -1,0 +1,22 @@
+{
+  "zero-shot": {
+    "total": 60,
+    "completados": 0,
+    "errores": 0,
+    "aciertos_corpus": 0,
+    "respetan_reglas": 0,
+    "indicios": 0,
+    "exactitud_corpus": null,
+    "adhesion_cfg": null
+  },
+  "few-shot": {
+    "total": 60,
+    "completados": 0,
+    "errores": 0,
+    "aciertos_corpus": 0,
+    "respetan_reglas": 0,
+    "indicios": 0,
+    "exactitud_corpus": null,
+    "adhesion_cfg": null
+  }
+}

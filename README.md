@@ -9,7 +9,7 @@ Teoría de Lenguajes de Programación
 1. 
 2. Jose Everth Martinez Benavides 00156021
 3. Diego Alejandro Montoya Ramirez 00087522
-4. 
+4. José Alfredo Rodríguez Rodríguez 00055421
 5. Julio Alberto Rodriguez Valencia 00163922
 
 ## Requisitos
@@ -57,7 +57,8 @@ proyecto-tlp/
 ├── espanol/        gramática y parser del español (pendiente)
 ├── pruebas/        casos de prueba y set de oraciones (pendiente)
 ├── comparacion/    comparación con spaCy y HuggingFace (pendiente)
-└── llm/            prompts y logs del experimento con el LLM (pendiente)
+├── llm/            prompts, experimento por OpenAI API y resultados
+└── informe/        marco teórico, informe integrado y diapositivas
 ```
 
 ## Lenguaje que reconoce el mini-C
@@ -72,3 +73,31 @@ while (x < 10) {
     x = x + 1;
 }
 ```
+
+## LLM, teoría e informe
+
+El experimento está implementado en [llm/experimento.py](llm/experimento.py).
+Envía las 60 oraciones del corpus a OpenAI por API en los modos zero-shot y
+few-shot; guarda las respuestas completas y evalúa por separado el acierto
+respecto al corpus y la adhesión a la gramática reducida.
+
+Preparar los archivos sin usar una clave ni consultar la API:
+
+```powershell
+python -m llm.experimento --preparar
+```
+
+Para ejecutar las 120 consultas, copiar `.env.example` como `.env`, configurar
+`OPENAI_API_KEY` y `OPENAI_MODEL`, y ejecutar:
+
+```powershell
+python -m llm.experimento
+```
+
+La clave queda fuera del repositorio mediante `.gitignore`. Los archivos
+preparados tienen estado `pendiente` hasta recibir respuestas reales.
+Revisar [las instrucciones y criterios de evaluación](llm/README.md) antes de
+ejecutar. No se necesitan paquetes de Python adicionales.
+
+- [Marco teórico y bibliografía](informe/marco_teorico.md).
+- [Informe integrado y estado de las secciones](informe/informe.md).
