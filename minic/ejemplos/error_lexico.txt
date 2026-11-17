@@ -1,0 +1,4 @@
+int total = 10;
+int precio = 5 @ 2;
+total = total + $precio;
+int 3x = 4;
