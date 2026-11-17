@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 from arbol import dibujar_arbol, imprimir_arbol
-from minic.lexer import analisis_lexico
+from minic.lexer import analisis_lexico, imprimir_tokens
 from minic.parser import analizar, ErrorSintactico
 from espanol.parser_es import analizar_oracion
 
@@ -39,10 +39,7 @@ def procesar(entrada, dibujar=False, nombre_arbol="arbol_minic"):
     """
     print("--- ANALISIS LEXICO ---")
     tokens, errores = analisis_lexico(entrada)
-    for token in tokens:
-        print(token.tipo.ljust(6), ":", token.lex)
-    for error in errores:
-        print(error)
+    imprimir_tokens(tokens, errores)
     if errores:
         print("\nHay errores léxicos; no se realiza el análisis sintáctico.")
         return False
