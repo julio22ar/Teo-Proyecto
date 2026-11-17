@@ -1,22 +1,22 @@
 {
   "zero-shot": {
     "total": 60,
-    "completados": 0,
+    "completados": 60,
     "errores": 0,
-    "aciertos_corpus": 0,
-    "respetan_reglas": 0,
-    "indicios": 0,
-    "exactitud_corpus": null,
-    "adhesion_cfg": null
+    "aciertos_corpus": 45,
+    "respetan_reglas": 53,
+    "indicios": 3,
+    "exactitud_corpus": 0.75,
+    "adhesion_cfg": 0.8833333333333333
   },
   "few-shot": {
     "total": 60,
-    "completados": 0,
+    "completados": 60,
     "errores": 0,
-    "aciertos_corpus": 0,
-    "respetan_reglas": 0,
-    "indicios": 0,
-    "exactitud_corpus": null,
-    "adhesion_cfg": null
+    "aciertos_corpus": 47,
+    "respetan_reglas": 59,
+    "indicios": 1,
+    "exactitud_corpus": 0.7833333333333333,
+    "adhesion_cfg": 0.9833333333333333
   }
 }

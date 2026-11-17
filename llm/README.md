@@ -76,6 +76,12 @@ No se fija temperatura porque su compatibilidad depende del modelo; se conserva
 el comportamiento predeterminado del proveedor. Para comparar modos, usar el
 mismo modelo y configuración. Un identificador versionado mejora la trazabilidad.
 
+Si aparece `HTTP 429 (insufficient_quota)`, revisar el saldo, la facturación y los
+límites del proyecto asociado a la clave. La facturación de la API es independiente
+de ChatGPT. `rate_limit_exceeded` indica un límite de solicitudes o tokens; en ese
+caso esperar antes de reanudar. El programa distingue ambos códigos sin mostrar
+el cuerpo del error ni la clave.
+
 ## Archivos y reanudación
 
 | Archivo | Contenido |
@@ -131,6 +137,33 @@ El parser es una referencia operativa del repositorio, no un oráculo infalible.
 Revisar manualmente desacuerdos relevantes contra `gramatica_es.txt`. El corpus
 finito no permite demostrar la clase formal de todo el español ni que un LLM
 implemente un autómata de una clase particular.
+
+## Comparar modos y llenar las tablas del informe
+
+Después de completar las 120 respuestas reales:
+
+```powershell
+python -m llm.comparar --actualizar-informe
+```
+
+El comando coteja `resultados_llm.csv` con la configuración y las respuestas
+originales de `logs.txt`. Requiere los dos modos y las 60 oraciones completas;
+con una corrida pendiente o inconsistente conserva el informe sin cambios.
+Genera `comparacion.md` y `comparacion.json`, y actualiza los bloques LLM de
+`informe/informe.md` con modelo, fechas, cobertura, exactitud, adhesión, indicios,
+resultados por nivel, tokens y oraciones cuya decisión cambia entre modos.
+Las fechas del informe se muestran en America/El_Salvador (UTC−6).
+
+Para consultar la comparación sin modificar el informe:
+
+```powershell
+python -m llm.comparar
+```
+
+El piloto debe guardarse en otra carpeta; no completa las tablas de la corrida
+de 60 casos. Las justificaciones requieren revisión: escribe observaciones en
+`revision_manual` del CSV y vuelve a generar la comparación para actualizar el
+número de explicaciones revisadas.
 
 ## Pruebas sin red
 

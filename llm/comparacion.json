@@ -1,0 +1,150 @@
+{
+  "por_modo": {
+    "zero-shot": {
+      "total": 60,
+      "aciertos_corpus": 45,
+      "respetan_reglas": 53,
+      "exactitud_corpus": 0.75,
+      "adhesion_cfg": 0.8833333333333333,
+      "indicios": 3,
+      "revisiones_manuales": 0,
+      "tokens_entrada": 135860,
+      "tokens_salida": 8314
+    },
+    "few-shot": {
+      "total": 60,
+      "aciertos_corpus": 47,
+      "respetan_reglas": 59,
+      "exactitud_corpus": 0.7833333333333333,
+      "adhesion_cfg": 0.9833333333333333,
+      "indicios": 1,
+      "revisiones_manuales": 0,
+      "tokens_entrada": 155180,
+      "tokens_salida": 5528
+    }
+  },
+  "por_nivel": {
+    "1": {
+      "zero-shot": {
+        "total": 20,
+        "aciertos_corpus": 18,
+        "respetan_reglas": 18,
+        "exactitud_corpus": 0.9,
+        "adhesion_cfg": 0.9,
+        "indicios": 0,
+        "revisiones_manuales": 0,
+        "tokens_entrada": 45253,
+        "tokens_salida": 2674
+      },
+      "few-shot": {
+        "total": 20,
+        "aciertos_corpus": 20,
+        "respetan_reglas": 20,
+        "exactitud_corpus": 1.0,
+        "adhesion_cfg": 1.0,
+        "indicios": 0,
+        "revisiones_manuales": 0,
+        "tokens_entrada": 51693,
+        "tokens_salida": 1681
+      }
+    },
+    "2": {
+      "zero-shot": {
+        "total": 20,
+        "aciertos_corpus": 18,
+        "respetan_reglas": 18,
+        "exactitud_corpus": 0.9,
+        "adhesion_cfg": 0.9,
+        "indicios": 0,
+        "revisiones_manuales": 0,
+        "tokens_entrada": 45296,
+        "tokens_salida": 3005
+      },
+      "few-shot": {
+        "total": 20,
+        "aciertos_corpus": 20,
+        "respetan_reglas": 20,
+        "exactitud_corpus": 1.0,
+        "adhesion_cfg": 1.0,
+        "indicios": 0,
+        "revisiones_manuales": 0,
+        "tokens_entrada": 51736,
+        "tokens_salida": 1853
+      }
+    },
+    "3": {
+      "zero-shot": {
+        "total": 20,
+        "aciertos_corpus": 9,
+        "respetan_reglas": 17,
+        "exactitud_corpus": 0.45,
+        "adhesion_cfg": 0.85,
+        "indicios": 3,
+        "revisiones_manuales": 0,
+        "tokens_entrada": 45311,
+        "tokens_salida": 2635
+      },
+      "few-shot": {
+        "total": 20,
+        "aciertos_corpus": 7,
+        "respetan_reglas": 19,
+        "exactitud_corpus": 0.35,
+        "adhesion_cfg": 0.95,
+        "indicios": 1,
+        "revisiones_manuales": 0,
+        "tokens_entrada": 51751,
+        "tokens_salida": 1994
+      }
+    }
+  },
+  "pares_adhesion": {
+    "ambos_respetan": 53,
+    "solo_few_shot": 6,
+    "solo_zero_shot": 0,
+    "ninguno_respeta": 1
+  },
+  "cambios": [
+    {
+      "id": "3",
+      "oracion": "Los perros buscan la pelota.",
+      "esperado_cfg": "aceptar",
+      "zero_shot": "rechazar",
+      "few_shot": "aceptar"
+    },
+    {
+      "id": "14",
+      "oracion": "Unos gatos comieron las flores.",
+      "esperado_cfg": "aceptar",
+      "zero_shot": "rechazar",
+      "few_shot": "aceptar"
+    },
+    {
+      "id": "23",
+      "oracion": "Los perros pequeños buscan la pelota roja.",
+      "esperado_cfg": "aceptar",
+      "zero_shot": "rechazar",
+      "few_shot": "aceptar"
+    },
+    {
+      "id": "30",
+      "oracion": "Los niños de la casa roja compran unos libros.",
+      "esperado_cfg": "aceptar",
+      "zero_shot": "rechazar",
+      "few_shot": "aceptar"
+    },
+    {
+      "id": "48",
+      "oracion": "El niño lee.",
+      "esperado_cfg": "rechazar",
+      "zero_shot": "aceptar",
+      "few_shot": "rechazar"
+    },
+    {
+      "id": "49",
+      "oracion": "Lee un libro.",
+      "esperado_cfg": "rechazar",
+      "zero_shot": "aceptar",
+      "few_shot": "rechazar"
+    }
+  ]
+}

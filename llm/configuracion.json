@@ -1,7 +1,7 @@
 {
   "proveedor": "OpenAI",
   "endpoint": "https://api.openai.com/v1/responses",
-  "modelo": "",
+  "modelo": "gpt-5.4-mini-2026-03-17",
   "modos": [
     "zero-shot",
     "few-shot"
@@ -458,5 +458,5 @@
   },
   "max_output_tokens": 2000,
   "parser_sha256": "affae705f98fb6311d7545660b2a9d23dd2c0f0d2d425c982fd79918a7acf539",
-  "huella": "f8cabcf1006081584ac52d96a07dc915a470cb30203febee71a441d628d003ae"
+  "huella": "bffc497b9a96d6cac648f2c58b70abf82fbdf9f78cd78bf11b5db2e8fef8aa6f"
 }

@@ -218,6 +218,22 @@ class PruebasExperimento(unittest.TestCase):
                 exp.consultar_openai({}, "clave-secreta-de-prueba", 10)
             self.assertNotIn("clave-secreta-de-prueba", str(capturada.exception))
 
+    def test_error_429_distingue_saldo_de_limite_temporal(self):
+        for codigo, texto, campo in (("insufficient_quota", "No hay cuota", "code"),
+                                     ("insufficient_quota", "No hay cuota", "type"),
+                                     ("rate_limit_exceeded", "límite de solicitudes", "code")):
+            cuerpo = io.BytesIO(json.dumps({"error": {
+                campo: codigo, "message": "clave-secreta-de-prueba"
+            }}).encode("utf-8"))
+            falla = HTTPError(exp.ENDPOINT, 429, "Too Many Requests", {}, cuerpo)
+            with self.subTest(codigo=codigo, campo=campo), patch.object(
+                exp.request, "urlopen", side_effect=falla
+            ), self.assertRaises(RuntimeError) as capturada:
+                exp.consultar_openai({}, "clave-secreta-de-prueba", 10)
+            self.assertIn(codigo, str(capturada.exception))
+            self.assertIn(texto, str(capturada.exception))
+            self.assertNotIn("clave-secreta-de-prueba", str(capturada.exception))
+
 
 if __name__ == "__main__":
     unittest.main()

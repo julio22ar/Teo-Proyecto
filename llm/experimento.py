@@ -95,6 +95,29 @@ def consultar_openai(peticion, clave, timeout):
         with request.urlopen(req, timeout=timeout) as respuesta:
             return json.load(respuesta)
     except error.HTTPError as exc:
+        # Leer solo un código reconocido: no mostrar cuerpos, cabeceras ni
+        # mensajes arbitrarios del servicio que pudieran repetir credenciales.
+        codigo = tipo_error = None
+        try:
+            datos_error = json.loads(exc.read()) if exc.fp is not None else {}
+            detalle = datos_error.get("error") if isinstance(datos_error, dict) else None
+            if isinstance(detalle, dict):
+                codigo = detalle.get("code")
+                tipo_error = detalle.get("type")
+        except (ValueError, TypeError, OSError):
+            pass
+        causas = {
+            "insufficient_quota": "No hay cuota disponible para esta clave. Revisa el saldo, "
+                                  "la facturación y los límites del proyecto en OpenAI.",
+            "rate_limit_exceeded": "Se alcanzó un límite de solicitudes o tokens. Espera "
+                                   "antes de reanudar la ejecución.",
+            "model_not_found": "El modelo configurado no existe o tu proyecto no tiene acceso.",
+            "invalid_api_key": "La clave no es válida. Reemplázala localmente en .env.",
+        }
+        if not (isinstance(codigo, str) and codigo in causas):
+            codigo = tipo_error
+        if isinstance(codigo, str) and codigo in causas:
+            raise RuntimeError(f"OpenAI HTTP {exc.code} ({codigo}). {causas[codigo]}") from None
         raise RuntimeError(
             f"OpenAI HTTP {exc.code}. Comprueba modelo, permisos, cuota y formato "
             "según el código HTTP; la ejecución se puede reanudar."
@@ -183,7 +206,7 @@ def guardar_resultados(salida, filas, modos, registros, modelo):
     resumen = {}
     temporal = destino.with_suffix(".csv.tmp")
     with temporal.open("w", encoding="utf-8", newline="") as archivo:
-        escritor = csv.DictWriter(archivo, fieldnames=CAMPOS)
+        escritor = csv.DictWriter(archivo, fieldnames=CAMPOS, lineterminator="\n")
         escritor.writeheader()
         for modo in modos:
             contadores = {"total": len(filas), "completados": 0, "errores": 0,
