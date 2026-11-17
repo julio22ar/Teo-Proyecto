@@ -6,6 +6,7 @@ También conserva el modo de ejecución directa:
 """
 
 import csv
+import importlib.util
 import subprocess
 import sys
 from pathlib import Path
@@ -14,6 +15,8 @@ from arbol import dibujar_arbol, imprimir_arbol
 from minic.lexer import analisis_lexico, imprimir_tokens
 from minic.parser import analizar, ErrorSintactico
 from espanol.parser_es import analizar_oracion
+from semantico.adaptador import programa_desde_arbol
+from semantico.tipos import analizar_tipos
 
 RAIZ = Path(__file__).resolve().parent
 SALIDAS = RAIZ / "salidas"
@@ -74,6 +77,43 @@ def procesar_espanol(oracion, dibujar=True):
     print("\nOración ACEPTADA por la gramática reducida.")
     print("Nota: aceptación sintáctica no equivale a validar el significado real.")
     return True
+
+
+def procesar_semantico(entrada):
+    """Analiza código con el núcleo semántico o el verificador parcial disponible.
+
+    Devuelve el resultado de las verificaciones disponibles; informa su alcance.
+    Los errores léxicos o sintácticos impiden continuar a la fase semántica.
+    """
+    print("--- ANÁLISIS SEMÁNTICO DE MINI-C ---")
+    tokens, errores = analisis_lexico(entrada)
+    if errores:
+        for error in errores:
+            print(error)
+        print("Hay errores léxicos; no se realiza el análisis semántico.")
+        return False
+    try:
+        arbol = analizar(tokens)
+    except ErrorSintactico as error:
+        print(error)
+        print("Hay errores sintácticos; no se realiza el análisis semántico.")
+        return False
+
+    programa = programa_desde_arbol(arbol)
+    if importlib.util.find_spec("semantico.analizador") is not None:
+        from semantico.analizador import analizar_programa
+        correcto, mensaje = analizar_programa(programa)
+    else:
+        print("Verificación parcial: tipos, uso de variables y ámbitos.")
+        print("La detección de redeclaraciones sigue pendiente del núcleo semántico.")
+        correcto, mensaje = analizar_tipos(programa)
+
+    print(mensaje)
+    if correcto:
+        print("No se encontraron errores en las verificaciones disponibles.")
+    else:
+        print("Se encontraron errores semánticos.")
+    return correcto
 
 
 def leer_codigo_multilinea():
@@ -204,6 +244,7 @@ def mostrar_menu():
     print("4. Ejecutar demo exploratoria de spaCy")
     print("5. Evaluar el parser propio con las 60 oraciones")
     print("6. Preparar o ejecutar el experimento LLM")
+    print("7. Analizar semánticamente")
     print("0. Salir")
 
 
@@ -232,6 +273,10 @@ def menu():
             evaluar_corpus_espanol()
         elif opcion == "6":
             ejecutar_experimento_llm()
+        elif opcion == "7":
+            codigo = leer_codigo_multilinea()
+            if codigo is not None:
+                procesar_semantico(codigo)
         else:
             print("Opción no válida. Intente de nuevo.")
         input("\nPresione Enter para volver al menú...")

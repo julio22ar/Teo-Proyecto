@@ -44,6 +44,22 @@ En algunos sistemas el comando puede ser python3.
 4. **Demo exploratoria de spaCy.** Ejecuta comparacion/demo_spacy.py sobre los casos de pruebas/fallas.csv. Esta demostración exploratoria no sustituye la comparación cuantitativa de las 60 oraciones requerida en la Fase 2.
 5. **Evaluar el parser propio con el corpus.** Procesa las 60 oraciones de pruebas/oraciones.csv y resume coincidencias y métricas frente a la columna esperado.
 6. **Experimento LLM.** Permite preparar los archivos sin consultar la API o iniciar la ejecución real. La ejecución completa envía 120 solicitudes (60 oraciones en zero-shot y few-shot) y puede generar cargos según la cuenta del proveedor.
+7. **Analizar semánticamente.** Permite cargar un archivo mini-C o pegar código hasta escribir `:fin`. Comprueba primero que no haya errores léxicos ni sintácticos y convierte el árbol a la representación de `semantico/`. Actualmente ejecuta `semantico/tipos.py`: verifica tipos, uso de variables declaradas y visibilidad por ámbitos. Informa que la verificación es parcial porque la detección de redeclaraciones todavía depende del núcleo pendiente. Cuando esté disponible `semantico/analizador.py` con `analizar_programa(programa)`, utilizará ese núcleo.
+
+Por ejemplo, en la opción 7:
+
+~~~c
+int x = 5;
+if (x < 10) {
+    int y = x + 1;
+}
+x = y;
+~~~
+
+El código tiene una estructura sintáctica válida, pero el verificador rechaza
+el uso final de `y` porque su ámbito terminó al cerrar el bloque del `if`.
+Para comprobar la declaración previa también puede usarse `x = 5;`: se rechaza
+porque `x` no está declarada. La opción 1 conserva el análisis léxico y sintáctico.
 
 ### Ejecutar mini-C desde un archivo
 
@@ -76,6 +92,54 @@ Pruebas automatizadas del experimento LLM, que utilizan respuestas simuladas y n
 python -m unittest discover -s pruebas -p "test_llm.py" -v
 ~~~
 
+Pruebas de la integración semántica y del menú:
+
+~~~bash
+python -m unittest discover -s pruebas -p "test_integracion_semantica.py" -v
+~~~
+
+## Reflexión: el proyecto y la jerarquía de Chomsky
+
+La experiencia permite distinguir tres tareas que requieren información diferente:
+
+| Etapa | Relación con la teoría | Ejemplo del proyecto |
+| --- | --- | --- |
+| Lexer | Lenguajes regulares, Tipo 3: patrones reconocibles con autómatas finitos. | Reconocer un identificador con `[a-zA-Z_][a-zA-Z0-9_]*` o un entero con `[0-9]+`. |
+| Parser | Lenguajes libres de contexto, Tipo 2: producciones que describen estructuras jerárquicas, reconocibles mediante autómatas de pila. | Agrupar expresiones con paréntesis y bloques anidados de `if` y `while`. |
+| Verificación semántica | Consulta información del contexto del programa mediante tipos y tablas de símbolos con ámbitos. | Comprobar que una variable usada tenga una declaración visible y que una asignación sea compatible con su tipo. |
+
+Una CFG que contiene la producción `asignacion → ID = expresion ;` permite
+reconocer la estructura de `x = 5;`, pero no establece por sí sola si ese nombre
+arbitrario fue declarado antes o si su declaración sigue siendo visible. No
+basta saber que una palabra pertenece a la categoría `ID`: hay que relacionar
+usos y declaraciones concretas. Al permitir nombres de longitud no acotada,
+esas relaciones pueden exigir comparar cadenas y conservar información que las
+reglas sintácticas de categorías no representan. En este proyecto el verificador
+recorre el programa y mantiene una pila de ámbitos; al salir de un bloque, sus
+declaraciones dejan de ser visibles.
+
+Esto conecta la fase semántica con restricciones sensibles al contexto del
+programa y con el estudio de lenguajes de Tipo 1, más expresivos que los libres
+de contexto. Sin embargo, llamar «semántica» a una comprobación no demuestra
+automáticamente que requiera Tipo 1: algunas restricciones con un conjunto
+finito de rasgos pueden codificarse en una CFG. Por ejemplo, la concordancia
+finita de género y número del español reducido puede expresarse desdoblando
+sus no terminales; algo similar puede hacerse con determinadas reglas de tipos.
+Clasificar formalmente todo un lenguaje requiere precisar sus reglas y aportar
+un argumento, no solo observar un rechazo del programa.
+
+La diferencia entre sintaxis y semántica se observa en el ejemplo anterior:
+el parser acepta la forma de `x = y;`, pero la comprobación de ámbitos detecta
+que `y` ya no es visible. La representación semántica contiene `int` para números
+y operaciones aritméticas, y `bool` para comparaciones; no evalúa el resultado
+de las expresiones ni ejecuta el programa. La redeclaración en un mismo ámbito
+debe comprobarla el núcleo semántico pendiente: no se considera verificada por
+el módulo de tipos actual.
+
+Fuentes: [lecciones 1, 3 y 4 de Theory of Computation, MIT](https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/pages/lecture-notes/)
+para expresiones regulares, CFG y autómatas de pila; el desarrollo y la
+bibliografía adicionales están en [el marco teórico](informe/marco_teorico.md).
+
 ## Experimento LLM
 
 La configuración detallada se encuentra en llm/README.md. Para preparar los archivos sin clave ni llamadas a la API:
@@ -101,6 +165,7 @@ Teo-Proyecto/
 ├── arbol.py                   nodos e impresión/visualización de árboles
 ├── minic/                     lexer, parser y gramática del mini-C
 ├── espanol/                   gramática, parser y vocabulario español reducido
+├── semantico/                 representación, adaptador y verificación de tipos
 ├── pruebas/                   corpus, casos mini-C y pruebas automatizadas
 ├── comparacion/               demostración exploratoria con spaCy
 ├── llm/                       prompts, experimento API, logs y resultados
