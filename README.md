@@ -43,7 +43,7 @@ En algunos sistemas el comando puede ser python3.
 3. **Ejecutar pruebas mini-C.** Lanza los casos válidos e inválidos de pruebas/casos_minic.py.
 4. **Demo exploratoria de spaCy.** Ejecuta comparacion/demo_spacy.py sobre los casos de pruebas/fallas.csv. Esta demostración exploratoria no sustituye la comparación cuantitativa de las 60 oraciones requerida en la Fase 2.
 5. **Evaluar el parser propio con el corpus.** Procesa las 60 oraciones de pruebas/oraciones.csv y resume coincidencias y métricas frente a la columna esperado.
-6. **Experimento LLM.** Permite preparar los archivos sin consultar la API o iniciar la ejecución real. La ejecución completa envía 120 solicitudes (60 oraciones en zero-shot y few-shot) y puede generar cargos según la cuenta del proveedor.
+6. **Experimento LLM.** Permite preparar archivos o ejecutar/reanudar las 120 clasificaciones (60 oraciones en zero-shot y few-shot). Solo consulta la API para los casos pendientes, con el consumo correspondiente. Si ya están completas, muestra el resumen guardado y no hace nuevas solicitudes. Para una medición independiente, usar otra carpeta con `--salida`, como se explica en `llm/README.md`.
 7. **Analizar semánticamente.** Permite cargar un archivo mini-C o pegar código hasta escribir `:fin`. Comprueba primero que no haya errores léxicos ni sintácticos y convierte el árbol a la representación de `semantico/`. Actualmente ejecuta `semantico/tipos.py`: verifica tipos, uso de variables declaradas y visibilidad por ámbitos. Informa que la verificación es parcial porque la detección de redeclaraciones todavía depende del núcleo pendiente. Cuando esté disponible `semantico/analizador.py` con `analizar_programa(programa)`, utilizará ese núcleo.
 
 Por ejemplo, en la opción 7:

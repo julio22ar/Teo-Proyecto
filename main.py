@@ -215,14 +215,15 @@ def evaluar_corpus_espanol():
 def ejecutar_experimento_llm():
     """Prepara el experimento LLM o lo ejecuta mediante la API configurada."""
     print("1. Preparar archivos sin consultar la API")
-    print("2. Ejecutar el experimento completo (120 solicitudes API)")
+    print("2. Ejecutar o reanudar el experimento (omite respuestas ya guardadas)")
     opcion = input("Seleccione una opción: ").strip()
     comando = [sys.executable, "-m", "llm.experimento"]
     if opcion == "1":
         comando.append("--preparar")
     elif opcion == "2":
         confirmacion = input(
-            "Esto enviará 120 solicitudes y puede generar cargos según su cuenta. "
+            "Solo se enviarán las solicitudes pendientes; las respuestas guardadas se omiten. "
+            "Las consultas nuevas pueden generar cargos según su cuenta. "
             "Escriba EJECUTAR para continuar: "
         ).strip()
         if confirmacion != "EJECUTAR":

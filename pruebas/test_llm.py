@@ -134,6 +134,23 @@ class PruebasExperimento(unittest.TestCase):
         self.assertEqual(len(log.splitlines()), 4)
         self.assertNotIn("clave-secreta-de-prueba", log)
 
+    def test_corrida_completa_muestra_resumen_sin_nuevas_consultas(self):
+        with patch.object(exp, "consultar_openai", return_value=respuesta_api()):
+            self.assertEqual(self.ejecutar("--limite", "1"), 0)
+        log_anterior = (self.salida / "logs.txt").read_bytes()
+        csv_anterior = (self.salida / "resultados_llm.csv").read_bytes()
+        consola = io.StringIO()
+        with patch.object(exp, "consultar_openai") as api, contextlib.redirect_stdout(consola):
+            resultado = exp.main(["--salida", str(self.salida), "--limite", "1", "--pausa", "0"])
+        self.assertEqual(resultado, 0)
+        api.assert_not_called()
+        self.assertIn("La corrida ya estaba completa", consola.getvalue())
+        self.assertIn("No se enviaron solicitudes nuevas", consola.getvalue())
+        self.assertIn("zero-shot: 1/1", consola.getvalue())
+        self.assertIn("few-shot: 1/1", consola.getvalue())
+        self.assertEqual((self.salida / "logs.txt").read_bytes(), log_anterior)
+        self.assertEqual((self.salida / "resultados_llm.csv").read_bytes(), csv_anterior)
+
     def test_error_preserva_respuesta_y_reanuda_caso_pendiente(self):
         incompleta = respuesta_api()
         incompleta["status"] = "incomplete"

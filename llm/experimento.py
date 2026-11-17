@@ -261,6 +261,19 @@ def guardar_resultados(salida, filas, modos, registros, modelo):
     return resumen
 
 
+def imprimir_resumen(resumen, salida):
+    """Hace visibles las mediciones, incluso cuando una corrida ya está completa."""
+    print("\n--- RESULTADOS GUARDADOS ---")
+    for modo, datos in resumen.items():
+        n = datos["completados"]
+        print(f"{modo}: {n}/{datos['total']} respuestas completadas; "
+              f"aciertos del corpus {datos['aciertos_corpus']}/{n}; "
+              f"respeta CFG {datos['respetan_reglas']}/{n}.")
+    print(f"Resultados por oración: {salida / 'resultados_llm.csv'}")
+    print(f"Respuestas completas: {salida / 'logs.txt'}")
+    print(f"Resumen: {salida / 'resumen.json'}")
+
+
 def ejecutar(args):
     filas = leer_corpus(args.corpus)
     if args.limite:
@@ -294,11 +307,18 @@ def ejecutar(args):
     )
     ruta_log.touch(exist_ok=True)
     completados = {(r["id"], r["modo"]) for r in registros if r["estado"] == "ok"}
-    guardar_resultados(salida, filas, modos, registros, modelo)
+    resumen = guardar_resultados(salida, filas, modos, registros, modelo)
     pendientes = len(filas) * len(modos) - len(completados)
     print(f"{len(filas)} oraciones; {len(modos)} modos; {pendientes} solicitudes pendientes.")
     if args.preparar:
-        print(f"Preparación local en {salida}. No se consultó la API; no hay resultados medidos.")
+        print(f"Preparación local en {salida}. No se consultó la API; "
+              f"se conservaron {len(completados)} respuestas anteriores.")
+        return 0
+    if pendientes == 0:
+        print("La corrida ya estaba completa. Se reutilizaron las respuestas guardadas.")
+        print("No se enviaron solicitudes nuevas a la API ni se generó consumo adicional.")
+        imprimir_resumen(resumen, salida)
+        print("Para una nueva medición independiente, usa --salida con otra carpeta.")
         return 0
     for modo in modos:
         for fila in filas:
@@ -321,7 +341,7 @@ def ejecutar(args):
             with ruta_log.open("a", encoding="utf-8") as archivo:
                 archivo.write(linea + "\n")
             registros.append(json.loads(linea))
-            guardar_resultados(salida, filas, modos, registros, modelo)
+            resumen = guardar_resultados(salida, filas, modos, registros, modelo)
             print(f"{modo} | caso {fila['id']} | {registro['estado']}")
             if registro["estado"] == "error":
                 print(registro["error"], file=sys.stderr)
@@ -329,6 +349,7 @@ def ejecutar(args):
             if args.pausa:
                 time.sleep(args.pausa)
     print(f"Experimento terminado. Resultados y respuestas completas en {salida}.")
+    imprimir_resumen(resumen, salida)
     return 0
 
 

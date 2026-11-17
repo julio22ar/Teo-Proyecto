@@ -95,6 +95,23 @@ el cuerpo del error ni la clave.
 
 Repetir **el mismo comando** reanuda la corrida: omite respuestas `ok` y reintenta
 los casos con error o pendientes. El log es la fuente para reconstruir el CSV.
+Si muestra **0 solicitudes pendientes**, la corrida ya está completa: muestra
+el resumen guardado y no consulta la API. Los archivos pueden conservar el mismo
+contenido, por lo que Git no mostrará cambios nuevos. Esto no es un fallo.
+
+Para hacer una medición nueva, conservando la anterior, usar otra carpeta:
+
+```powershell
+python -m llm.experimento --salida llm/corrida_02
+```
+
+Una carpeta nueva inicia otras 120 solicitudes y genera sus propios archivos;
+esas consultas sí consumen saldo de la API. Para comparar esa nueva corrida:
+
+```powershell
+python -m llm.comparar --salida llm/corrida_02
+```
+
 Los comentarios de `revision_manual` del CSV se conservan al actualizarlo.
 El programa se detiene ante el primer error; no reintenta automáticamente
 solicitudes que podrían generar nuevos cargos. Después de un timeout, revisar el
