@@ -235,6 +235,11 @@ def ejecutar_experimento_llm():
     subprocess.run(comando, cwd=RAIZ, check=False)
 
 
+def generar_graficas():
+    """Genera las gráficas de Fase 2 a partir de los datos guardados."""
+    subprocess.run([sys.executable, "-m", "comparacion.graficas"], cwd=RAIZ, check=False)
+
+
 def mostrar_menu():
     print("\n" + "=" * 62)
     print(" TEO - GRAMÁTICAS FORMALES Y LENGUAJE NATURAL")
@@ -246,6 +251,7 @@ def mostrar_menu():
     print("5. Evaluar el parser propio con las 60 oraciones")
     print("6. Preparar o ejecutar el experimento LLM")
     print("7. Analizar semánticamente")
+    print("8. Generar gráficas de Fase 2")
     print("0. Salir")
 
 
@@ -278,6 +284,8 @@ def menu():
             codigo = leer_codigo_multilinea()
             if codigo is not None:
                 procesar_semantico(codigo)
+        elif opcion == "8":
+            generar_graficas()
         else:
             print("Opción no válida. Intente de nuevo.")
         input("\nPresione Enter para volver al menú...")
