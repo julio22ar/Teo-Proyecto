@@ -1,0 +1,61 @@
+id,oracion,nivel,esperado,parser_propio,spacy,nltk,ms_parser_propio,ms_spacy,ms_nltk
+1,El niño lee un libro.,1,aceptar,aceptar,aceptar,aceptar,0.163,25.367,21727.8
+2,La niña mira la flor.,1,aceptar,aceptar,aceptar,aceptar,0.071,11.125,2.088
+3,Los perros buscan la pelota.,1,aceptar,aceptar,aceptar,aceptar,0.082,12.664,2.465
+4,Las maestras leen las cartas.,1,aceptar,aceptar,aceptar,aceptar,0.085,10.967,4.398
+5,Un gato come una flor.,1,aceptar,aceptar,aceptar,aceptar,0.106,10.363,2.306
+6,La maestra compra un libro.,1,aceptar,aceptar,aceptar,rechazar,0.081,10.062,1.618
+7,Los niños visitan el parque.,1,aceptar,aceptar,aceptar,aceptar,0.082,10.583,2.451
+8,Unas niñas llevan unas flores.,1,aceptar,aceptar,aceptar,aceptar,0.089,10.816,2.424
+9,El maestro leyó la carta.,1,aceptar,aceptar,aceptar,aceptar,0.088,10.942,2.118
+10,Las gatas miraron el árbol.,1,aceptar,aceptar,aceptar,aceptar,0.085,12.343,2.374
+11,El perro encontró la pelota.,1,aceptar,aceptar,aceptar,aceptar,0.082,9.97,2.132
+12,Los maestros compraron unos libros.,1,aceptar,aceptar,aceptar,aceptar,0.081,9.631,1.739
+13,Una niña visitó el jardín.,1,aceptar,aceptar,aceptar,aceptar,0.07,6.694,1.423
+14,Unos gatos comieron las flores.,1,aceptar,aceptar,aceptar,aceptar,0.054,6.613,1.277
+15,El niña lee un libro.,1,rechazar,rechazar,aceptar,aceptar,0.061,4.823,1.092
+16,Los niño miran la casa.,1,rechazar,rechazar,aceptar,aceptar,0.029,4.71,1.016
+17,Los perros busca la pelota.,1,rechazar,rechazar,aceptar,aceptar,0.033,5.273,1.044
+18,La maestra leen una carta.,1,rechazar,rechazar,aceptar,rechazar,0.035,4.157,0.682
+19,Niño el lee un libro.,1,rechazar,rechazar,aceptar,rechazar,0.022,4.698,0.832
+20,El gato come una.,1,rechazar,rechazar,aceptar,rechazar,0.046,6.214,0.651
+21,El niño alto lee un libro nuevo.,2,aceptar,aceptar,aceptar,aceptar,0.051,5.165,2.436
+22,La niña pequeña mira las flores rojas.,2,aceptar,aceptar,aceptar,aceptar,0.051,6.956,1.755
+23,Los perros pequeños buscan la pelota roja.,2,aceptar,aceptar,aceptar,aceptar,0.049,5.218,2.054
+24,La maestra lee una carta en el jardín.,2,aceptar,aceptar,aceptar,rechazar,0.051,5.713,1.26
+25,El gato mira la pelota sobre la mesa.,2,aceptar,aceptar,aceptar,aceptar,0.053,4.899,1.779
+26,Ayer los niños visitaron el parque.,2,aceptar,aceptar,aceptar,aceptar,0.043,4.613,1.078
+27,El perro busca la pelota rápidamente.,2,aceptar,aceptar,aceptar,aceptar,0.05,5.366,1.168
+28,La niña siempre lee un libro.,2,aceptar,aceptar,aceptar,aceptar,0.043,5.184,1.428
+29,El maestro mira a la niña.,2,aceptar,aceptar,aceptar,aceptar,0.049,5.867,1.128
+30,Los niños de la casa roja compran unos libros.,2,aceptar,aceptar,aceptar,aceptar,0.059,5.109,2.945
+31,Hoy la maestra alta lleva las cartas nuevas para los niños.,2,aceptar,aceptar,aceptar,rechazar,0.065,7.064,1.78
+32,Las gatas bonitas comieron lentamente las flores.,2,aceptar,aceptar,aceptar,rechazar,0.048,5.532,13.172
+33,Un niño pequeño encontró un libro rojo bajo el árbol.,2,aceptar,aceptar,aceptar,aceptar,0.273,39.6,13.008
+34,La nueva maestra visitó la casa bonita.,2,aceptar,aceptar,aceptar,rechazar,0.132,13.298,2.254
+35,El niño alta lee un libro.,2,rechazar,rechazar,aceptar,aceptar,0.055,7.535,3.919
+36,La niña mira las flores rojo.,2,rechazar,rechazar,aceptar,aceptar,0.118,6.781,1.685
+37,Los perros pequeño buscan la pelota.,2,rechazar,rechazar,aceptar,aceptar,0.038,7.161,1.544
+38,Ayer los niños visitó el parque.,2,rechazar,rechazar,aceptar,aceptar,0.046,5.643,1.395
+39,El gato mira la pelota sobre mesa la.,2,rechazar,rechazar,aceptar,rechazar,0.059,6.039,2.747
+40,La maestra lee una carta en.,2,rechazar,rechazar,aceptar,rechazar,0.065,5.743,0.893
+41,El niño que lee un libro mira la casa.,3,aceptar,rechazar,aceptar,aceptar,0.043,6.087,3.401
+42,Los niños que la maestra mira leen un libro.,3,aceptar,rechazar,aceptar,rechazar,0.072,6.882,1.361
+43,El niño lee un libro que la maestra compró.,3,aceptar,rechazar,aceptar,rechazar,0.059,6.337,1.72
+44,El perro que busca la pelota que el niño llevó come una flor.,3,aceptar,rechazar,aceptar,aceptar,0.049,7.213,4.012
+45,El niño y la niña leen un libro.,3,aceptar,rechazar,aceptar,aceptar,0.046,6.815,2.142
+46,El niño lee un libro y la niña mira una flor.,3,aceptar,rechazar,aceptar,aceptar,0.065,7.041,3.997
+47,La niña mira una flor roja y bonita.,3,aceptar,rechazar,aceptar,aceptar,0.114,6.938,2.792
+48,El niño lee.,3,aceptar,rechazar,aceptar,aceptar,0.052,5.475,1.008
+49,Lee un libro.,3,aceptar,rechazar,aceptar,aceptar,0.051,6.187,0.835
+50,El niño no lee un libro.,3,aceptar,rechazar,aceptar,aceptar,0.045,7.188,1.955
+51,El niño la mira.,3,aceptar,rechazar,aceptar,rechazar,0.065,6.899,0.839
+52,El perro busca la pelota del niño.,3,aceptar,rechazar,aceptar,aceptar,0.069,7.351,3.882
+53,El niño lee el libro rápidamente en el parque.,3,aceptar,rechazar,aceptar,aceptar,0.098,7.902,2.72
+54,El niño mira el libro de la maestra de la casa roja.,3,aceptar,aceptar,aceptar,rechazar,0.099,8.685,2.689
+55,La maestra busca el libro en la mesa.,3,aceptar,aceptar,aceptar,rechazar,0.08,6.516,1.657
+56,El niño y la niña son alto y alta respectivamente.,3,aceptar,rechazar,aceptar,aceptar,0.045,9.099,3.73
+57,Los niños que la maestra mira lee un libro.,3,rechazar,rechazar,aceptar,rechazar,0.06,8.866,1.908
+58,El niño que lee un libro miran la casa.,3,rechazar,rechazar,aceptar,aceptar,0.078,7.981,4.542
+59,El niño y la niña lee un libro.,3,rechazar,rechazar,aceptar,aceptar,0.063,7.815,2.198
+60,La maestra lee un libro y una cartas.,3,rechazar,rechazar,aceptar,rechazar,0.063,6.738,1.462
