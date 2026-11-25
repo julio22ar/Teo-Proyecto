@@ -257,6 +257,12 @@ def generar_graficas():
     subprocess.run([sys.executable, "-m", "comparacion.graficas"], cwd=RAIZ, check=False)
 
 
+def comparar_herramientas():
+    """Corre las 60 oraciones por los 3 sistemas y calcula las métricas."""
+    subprocess.run([sys.executable, "-m", "comparacion.comparar"], cwd=RAIZ, check=False)
+    subprocess.run([sys.executable, "-m", "comparacion.metricas"], cwd=RAIZ, check=False)
+
+
 def mostrar_menu():
     print("\n" + "=" * 62)
     print(" TEO - GRAMÁTICAS FORMALES Y LENGUAJE NATURAL")
@@ -270,6 +276,7 @@ def mostrar_menu():
     print("7. Analizar semánticamente")
     print("8. Analizar una oración con NLTK (segunda herramienta NLP)")
     print("9. Generar gráficas de Fase 2")
+    print("10. Comparar las 60 oraciones (parser propio vs spaCy vs NLTK) y calcular métricas")
     print("0. Salir")
 
 
@@ -310,6 +317,8 @@ def menu():
                 print("No se ingresó ninguna oración.")
         elif opcion == "9":
             generar_graficas()
+        elif opcion == "10":
+            comparar_herramientas()
         else:
             print("Opción no válida. Intente de nuevo.")
         input("\nPresione Enter para volver al menú...")
