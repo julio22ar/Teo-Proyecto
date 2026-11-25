@@ -162,6 +162,23 @@ def ejecutar_demo_spacy():
     demo()
 
 
+def analizar_con_nltk(oracion):
+    """Analiza una oración con NLTK (segunda herramienta NLP) y muestra su árbol."""
+    try:
+        from comparacion.herramienta_nltk import analizar_nltk, primer_arbol
+    except (ImportError, LookupError) as error:
+        print("No se pudo cargar NLTK:", error)
+        print("Instale con: python -m pip install nltk")
+        print("y descargue el corpus: python -c \"import nltk; nltk.download('cess_esp')\"")
+        return
+    print("Entrenando el etiquetador con cess_esp (solo la primera vez)...")
+    aceptada, detalle = analizar_nltk(oracion)
+    print("ACEPTA" if aceptada else "RECHAZA", "|", oracion)
+    print(detalle)
+    if aceptada:
+        primer_arbol(oracion).pretty_print()
+
+
 def evaluar_corpus_espanol():
     """Contrasta el parser del español con las etiquetas del corpus de 60 casos."""
     ruta = RAIZ / "pruebas" / "oraciones.csv"
@@ -246,6 +263,7 @@ def mostrar_menu():
     print("5. Evaluar el parser propio con las 60 oraciones")
     print("6. Preparar o ejecutar el experimento LLM")
     print("7. Analizar semánticamente")
+    print("8. Analizar una oración con NLTK (segunda herramienta NLP)")
     print("0. Salir")
 
 
@@ -278,6 +296,12 @@ def menu():
             codigo = leer_codigo_multilinea()
             if codigo is not None:
                 procesar_semantico(codigo)
+        elif opcion == "8":
+            oracion = input("Escriba la oración: ").strip()
+            if oracion:
+                analizar_con_nltk(oracion)
+            else:
+                print("No se ingresó ninguna oración.")
         else:
             print("Opción no válida. Intente de nuevo.")
         input("\nPresione Enter para volver al menú...")
