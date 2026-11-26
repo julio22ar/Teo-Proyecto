@@ -174,10 +174,3 @@ Teo-Proyecto/
 └── README.md                  instrucciones del proyecto
 ~~~
 
-## Estado de la Fase 2
-
-El repositorio cuenta con el parser del español reducido y su gramática, un corpus de 60 oraciones y el módulo de experimento LLM. La demo spaCy actualmente trabaja con pruebas/fallas.csv; todavía debe completarse el pipeline de comparación de las 60 oraciones con las herramientas NLP elegidas, incluyendo medición de tiempos, métricas y gráficas. Los resultados reales del LLM requieren ejecutar las consultas con una clave configurada. El informe final debe completarse con las mediciones verificables del equipo, sin reemplazarlas por resultados simulados.
-
-- Borrador actual del informe en Markdown: informe/informe.md.
-- Marco teórico y bibliografía de trabajo: informe/marco_teorico.md.
-- Instrucciones del experimento LLM: llm/README.md.
