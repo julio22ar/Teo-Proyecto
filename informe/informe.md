@@ -17,14 +17,12 @@ a personas cuya distribución no se ha proporcionado.
 
 ## Resumen
 
-El proyecto contrasta el reconocimiento formal de un mini-C y un subconjunto
-del español con el comportamiento de un modelo de lenguaje. El código disponible
-incluye un lexer y parser de mini-C, un reconocedor del español con concordancia,
-un corpus de 60 oraciones y una demo de análisis con spaCy. El aporte del
-Integrante 5 implementa un experimento por OpenAI API con prompts zero-shot y
-few-shot, registro de respuestas y dos referencias de evaluación. La medición
-separa aceptabilidad del español general de pertenencia al subconjunto formal.
-Se entrega asimismo el marco teórico y una presentación reproducible.
+En mini-C estudiamos cómo se reconoce una expresión y cómo se comprueba que las
+variables que contiene están declaradas y son visibles. Para el español, comparamos
+un parser de gramática reducida con spaCy y NLTK sobre 60 oraciones etiquetadas.
+Con esas mismas oraciones evaluamos si un modelo de lenguaje, consultado por API,
+aplica las reglas del subconjunto. Las etiquetas del corpus y las decisiones del
+parser ofrecen dos referencias para interpretar sus respuestas.
 
 ## 1. Objetivos
 
@@ -52,61 +50,112 @@ El [estudio de Shieber](https://www.eecs.harvard.edu/shieber/Biblio/Papers/shieb
 analiza una familia de construcciones del alemán suizo; una oración aislada del
 corpus español no reproduce esa prueba.
 
-## 3. Análisis del lenguaje de programación — sección para revisión del responsable
+## 3. Análisis de mini-C
 
 ### 3.1 Lexer
 
 `minic/lexer.py` reconoce `int`, `if`, `else`, `while`, identificadores ASCII,
 enteros, operadores aritméticos y comparadores, paréntesis, llaves y punto y coma.
-Produce tokens con tipo, lexema y línea; reporta caracteres inválidos.
-El lector debe distinguir este estado actual del requisito de columna, aún no
-implementado en el código revisado.
+Cada token conserva el tipo, el lexema y la línea y columna donde comienza,
+contadas desde 1. El lexer también localiza caracteres inválidos como `@` y
+literales mal formados como `12abc`.
 
 ### 3.2 Parser y árbol
 
 `minic/parser.py` implementa descenso recursivo para las reglas de
 `minic/gramatica.txt`. `arbol.py` permite construir e imprimir los árboles.
-El punto de entrada `main.py` ejecuta lexer y parser. Los 25 casos existentes
-de `pruebas/casos_minic.py` se aceptan o rechazan como establece esa suite.
+Por ejemplo, en `x = 2 + 3 * 4;` el árbol agrupa la multiplicación dentro de la
+suma. La asignación tiene la estructura exigida incluso si todavía falta
+declarar la variable `x`.
 
-### 3.3 Análisis semántico solicitado en Fase 1
+### 3.3 Declaraciones, ámbitos y tipos
 
-En el código disponible no existe `semantico.py` ni una tabla de símbolos con
-ámbitos, redeclaraciones y tipos. Esta sección queda identificada como pendiente
-de la persona responsable; no se confunde la aceptación sintáctica con la
-verificación de declaraciones. Su futura integración debe aportar implementación,
-casos válidos e inválidos y evidencia de ejecución.
+La opción 7 de `main.py` ejecuta el lexer y el parser. Si ambos aceptan la
+entrada, el adaptador convierte el árbol en sentencias que recorre el analizador
+semántico. La tabla de símbolos mantiene un diccionario por ámbito y busca cada
+nombre desde el bloque actual hacia el exterior. Rechaza una segunda declaración
+en el mismo bloque y permite que una declaración interior oculte temporalmente
+a otra exterior. El verificador de tipos comprueba inicializaciones, asignaciones
+y expresiones. Los operadores aritméticos trabajan con enteros y las condiciones
+de `if` y `while` requieren una comparación de tipo booleano.
 
-## 4. Español reducido y corpus — sección para revisión del responsable
+```c
+int x;
+if (1 == 1) {
+    int y = 2;
+    x = y;
+}
+x = y;
+```
+
+Dentro del bloque están visibles tanto `x` como `y`. Al cerrarse la llave termina
+el ámbito de `y`. La última asignación tiene la misma forma que la anterior y el
+analizador semántico la rechaza porque ya no encuentra la declaración de `y`.
+
+## 4. Español reducido y corpus
 
 `espanol/gramatica_es.txt` define sujeto explícito, verbo y objeto obligatorio,
 con adjetivos, adverbios y frases preposicionales. `vocabulario.py` es un léxico
 cerrado con rasgos de género, número y tiempo. `parser_es.py` devuelve aceptación,
 árbol o mensaje de error y comprueba concordancia.
 
-`pruebas/oraciones.csv` tiene 60 casos: 20 por nivel. Los dos primeros niveles
-incluyen construcciones del subconjunto y errores de orden o concordancia. El
-tercero explora relativas, coordinación, negación y otras construcciones más
-amplias. Los niveles 1–3 del CSV son **niveles del corpus**, no los tipos 1–3
-de la jerarquía de Chomsky.
+Los tres niveles del corpus agrupan 60 oraciones distintas según las
+construcciones que ponen a prueba. Cada fila identifica la oración, el nivel,
+el fenómeno lingüístico y la decisión esperada en español. Todos los sistemas
+se evalúan con las mismas etiquetas. [Corpus de evaluación](../pruebas/oraciones.csv)
 
-El corpus etiqueta 44 casos como `aceptar` y 16 como `rechazar`. La referencia
-del parser acepta 30 y rechaza 30. Se registran 14 casos etiquetados como
-aceptables en español general que el subconjunto rechaza. Sus identificadores
-son 41–53 y 56. Estas diferencias son casos de interés experimental, no
-automáticamente defectos del parser.
+| Nivel | Construcciones y ejemplos del corpus | Aceptar | Rechazar |
+| --- | --- | ---: | ---: |
+| 1 · Simple | Sujeto, verbo y objeto en presente o pasado. «El maestro leyó la carta.» (ID 9). Se prueban también el orden y la concordancia. | 14 | 6 |
+| 2 · Intermedio | Adjetivos, adverbios, frases preposicionales y objeto con «a». «La niña pequeña mira las flores rojas.» (ID 22). | 14 | 6 |
+| 3 · Complejo | Relativas, coordinación, sujeto tácito, negación, clíticos y contracciones. «El niño lee un libro que la maestra compró.» (ID 43). | 16 | 4 |
+| **Total** | **20 oraciones por nivel** | **44** | **16** |
 
-## 5. Comparación con herramientas NLP — sección para revisión del responsable
+La etiqueta del caso 43 es *aceptar*. El parser reducido lo rechaza porque su
+léxico y sus producciones dejan fuera la relativa introducida por «que». En el
+mismo nivel, «El niño y la niña lee un libro.» (ID 59) lleva la etiqueta
+*rechazar* por la discordancia entre el sujeto coordinado y el verbo singular.
+El nivel señala la complejidad del ejemplo y admite ambos resultados.
 
-`comparacion/demo_spacy.py` carga `es_core_news_sm`, obtiene categorías y
-dependencias, y las muestra junto con la decisión del parser propio sobre
-`pruebas/fallas.csv`. La anotación de dependencias y el reconocimiento de
-pertenencia a una gramática son salidas distintas. Que spaCy produzca un análisis
-no equivale a certificar que una oración sea gramatical o esté en el subconjunto.
+## 5. Comparación del parser propio con spaCy y NLTK
 
-No se incorporan cifras de spaCy ni HuggingFace: el modelo spaCy no se ejecutó en
-esta revisión y no hay implementación de HuggingFace en los archivos revisados.
-El responsable debe añadir su evidencia y explicar la procedencia de los casos.
+Se registraron tres decisiones y tres tiempos por oración. El **parser propio**
+acepta cuando reconoce la cadena completa con la gramática reducida. **spaCy**
+produce un análisis de dependencias con `es_core_news_sm`. El programa de
+comparación registra *aceptar* cuando obtiene ese análisis. En **NLTK**, un
+etiquetador entrenado con `cess_esp` asigna categorías a las palabras y un
+`ChartParser` acepta si una segunda CFG construye al menos un árbol sobre esas
+categorías. Esta gramática incluye reglas para coordinación y subordinación.
+[Procedimiento de comparación](../comparacion/comparar.py) · [Gramática de NLTK](../comparacion/herramienta_nltk.py)
+
+Tomamos *aceptar* como clase positiva. La **precisión** indica qué proporción de
+las aceptaciones del sistema concuerda con el corpus. La **cobertura** indica qué
+proporción de los 44 casos aceptables recupera. El **rechazo correcto** mide
+cuántos de los 16 casos etiquetados para rechazo descarta. Un falso positivo (FP)
+es una aceptación incorrecta y un falso negativo (FN) es un rechazo incorrecto.
+
+| Sistema | Precisión | Cobertura | Rechazo correcto | FP | FN | Tiempo medio por oración |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Parser propio | 100,0 % | 68,2 % | 100,0 % | 0 | 14 | 0,07 ms |
+| spaCy | 73,3 % | 100,0 % | 0,0 % | 16 | 0 | 8,2 ms |
+| NLTK | 79,1 % | 77,3 % | 43,8 % | 9 | 10 | 364,5 ms |
+
+El parser propio coincidió con las 40 etiquetas de los niveles 1 y 2. Sus 14
+falsos negativos se concentraron en el nivel 3 (IDs 41–53 y 56). Algunos de esos
+casos admiten una extensión de la propia CFG. Por ejemplo, una producción para
+sujetos coordinados podría cubrir «El niño y la niña» junto con una regla de
+concordancia plural. Los rechazos delimitan la cobertura de las reglas y del
+vocabulario que implementó el equipo.
+
+En spaCy, las 60 entradas recibieron análisis. La convención de registrarlas como
+aceptadas explica tanto la cobertura del 100 % como los 16 falsos positivos.
+NLTK recuperó 34 de las 44 oraciones aceptables, pero también aceptó «El niña lee
+un libro.» (ID 15). Su gramática agrupa determinantes y sustantivos en categorías
+que omiten el género. [Decisiones por oración](../comparacion/resultados.csv) · [Métricas por nivel](../comparacion/metricas.csv)
+
+Los tiempos corresponden a la corrida registrada. En NLTK, la primera oración
+incluyó el entrenamiento del etiquetador y tardó 21,7 segundos. Esa observación
+eleva la media a 364,5 ms por oración. La mediana de las 60 mediciones fue 1,93 ms.
 
 ## 6. Experimento LLM — aporte del Integrante 5
 
@@ -165,7 +214,8 @@ de incumplimiento: las reglas no juzgan el sentido en el mundo real.
 
 | Componente | Evidencia local | Interpretación |
 | --- | --- | --- |
-| Mini-C | 25/25 casos existentes con el resultado esperado. | Validación sintáctica y el caso léxico incluido; no mide semántica. |
+| Mini-C, lexer y parser | 25/25 casos en `python -m pruebas.casos_minic`. | Se aceptaron las 12 entradas válidas y se rechazaron las 13 inválidas. |
+| Mini-C, pruebas léxicas y semánticas | 32/32 casos en `python -m pruebas.casos_lexico_semantico`. | Pasaron 8 casos del lexer, 11 del verificador de tipos y 13 del analizador semántico integrado. Estos últimos incluyen redeclaración, sombreado y uso fuera de ámbito. |
 | Español, nivel 1 | 20/20 coincidencias con el corpus. | Incluye aceptación y rechazo. |
 | Español, nivel 2 | 20/20 coincidencias con el corpus. | Incluye modificadores y concordancia. |
 | Español, nivel 3 | 6/20 coincidencias; 14 desacuerdos. | Las 14 son oraciones aceptables fuera del subconjunto actual. |
@@ -268,31 +318,35 @@ precios ni garantiza un presupuesto. Los cargos dependen del modelo y las
 condiciones de la cuenta; consultar la página del proveedor antes de ejecutar.
 El cumplimiento de JSON Schema garantiza estructura de datos, no veracidad.
 
-## 9. Conclusiones del estado actual
+## 9. Conclusiones
 
-La implementación permite observar por separado tokenización, reconocimiento
-sintáctico y aplicación de reglas del subconjunto del español. El aporte del
-Integrante 5 implementó y ejecutó el mecanismo de consulta y evaluación del
-LLM con 120 respuestas reales. En esta corrida, few-shot logró 59/60 coincidencias
-con la CFG frente a 53/60 de zero-shot; el incremento observado fue de diez puntos
-porcentuales. Esto describe el corpus y la configuración usados, sin demostrar
-superioridad general. La sección 7 distingue los resultados registrados de las mediciones
-que sigan pendientes; la validación semántica de mini-C corresponde a una entrega
-separada que aún no está en el código disponible.
+En mini-C, una misma asignación puede ser válida dentro de un bloque y fallar
+fuera de él. Los patrones regulares del lexer reconocen los mismos tokens en
+ambas apariciones y el parser construye la misma estructura. La tabla de símbolos
+permite explicar la diferencia al identificar qué declaración sigue visible. Así
+se observa en un programa concreto qué aporta cada etapa del análisis.
 
-Una CFG limitada y un LLM resuelven tareas diferentes si no se fija la consigna:
-el primero decide pertenencia al lenguaje implementado; al segundo hay que pedirle
-explícitamente esa misma pertenencia para poder medir adhesión a las reglas.
-El experimento registra ambos criterios sin convertir errores del parser o
-aceptabilidad cotidiana en conclusiones formales sobre todo el lenguaje natural.
+En español, el parser reducido reconoció 30 de las 44 oraciones que el corpus
+etiqueta como aceptables y rechazó las 16 etiquetadas como incorrectas. Los 14
+desacuerdos muestran qué construcciones habría que añadir para ampliar el
+subconjunto. Determinar los límites de todas las gramáticas libres de contexto
+requiere un argumento sobre familias de cadenas. En esta comparación también
+influyó cómo se definió *aceptar*: obtener dependencias en spaCy permitió contar
+un análisis para cada entrada, mientras que construir un árbol en NLTK dependió
+de las categorías y producciones elegidas.
+
+En las 120 respuestas del LLM, añadir cuatro ejemplos elevó la coincidencia con
+la gramática de 53/60 a 59/60. La diferencia se aprecia en «El niño lee.» y
+«Lee un libro.»: *few-shot* rechazó ambas por las reglas de objeto obligatorio
+y sujeto explícito. Ese cambio mejoró la adhesión al subconjunto aunque las dos
+oraciones son aceptables según el corpus. La elección de la referencia determina
+qué pregunta responde cada porcentaje.
 
 ## 10. Integración antes de entregar
 
 - Completar portada y confirmar con el equipo la autoría de cada sección temática.
-- Incorporar la sección semántica y sus evidencias cuando el responsable la entregue.
 - Revisar las tablas reales ya incorporadas y añadir la revisión humana de las
   explicaciones del experimento LLM.
-- Añadir evidencia de la comparación NLP que efectivamente se haya ejecutado.
 - Actualizar las diapositivas con los resultados finales, conservando su procedencia.
 
 ## Referencias y anexos

@@ -37,8 +37,9 @@ x = (2 + 3) * 4;
 ```
 
 El lexer reconoce `int`, `x`, los números y signos. El parser identifica una
-declaración y una asignación con una expresión anidada. Un analizador semántico
-comprobaría además si `x` fue declarada, qué tipo tiene y en qué ámbito es visible.
+declaración y una asignación con una expresión anidada. El analizador semántico
+encuentra la declaración visible de `x` y comprueba que el resultado entero de
+la expresión se puede asignar a esa variable.
 
 Una regla sintáctica como `asignacion → ID = expresion ;` no enlaza por sí sola
 cada identificador arbitrario con su declaración y ámbito. En compiladores se
@@ -49,9 +50,10 @@ En cambio, algunas verificaciones con dominios finitos, como unas pocas clases
 de tipos, pueden codificarse mediante desdoblamiento de no terminales. **No todo
 chequeo llamado semántico demuestra por sí mismo que el lenguaje sea de Tipo 1.**
 
-Estado observado: el repositorio tiene lexer y parser de mini-C, pero aún no
-incluye `semantico.py`. El presente aporte no sustituye esa entrega ni afirma
-que se hayan ejecutado comprobaciones de ámbitos o tipos.
+En mini-C, la tabla de símbolos registra el tipo y el ámbito de cada declaración.
+Al cerrar un bloque se retira su tabla y vuelven a quedar visibles los nombres
+exteriores que ese bloque ocultaba. La sección 3 del [informe](informe.md)
+ilustra este recorrido con una asignación dentro y fuera de un bloque.
 
 ## 3. Concordancia y gramática del español reducido
 
